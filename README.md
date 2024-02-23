@@ -1,57 +1,84 @@
-# Project Name
+# Quickstart: Azure Cosmos DB for Table client library for .NET
 
-(short, 1-3 sentenced, description of the project)
+This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table's client library for .NET. This sample application accesses an existing account, database, and container using the [`Microsoft.Azure.Cosmos`](https://www.nuget.org/packages/Microsoft.Azure.Cosmos) and  [`Azure.Identity`](https://www.nuget.org/packages/Azure.Identity) libraries from NuGet. Modify the source code and leverage the Infrastructure as Code (IaC) Bicep assets to get up and running quickly.
 
-## Features
+When you are finished, you will have a fully functional web application deployed to Azure.
 
-This project framework provides the following features:
+![Screenshot of the deployed web application.](assets/cosmos-table-app.png)
 
-* Feature 1
-* Feature 2
-* ...
-
-## Getting Started
+<sup>Screenshot of the deployed web application.</sup>
 
 ### Prerequisites
 
-(ideally very short, if any)
+> This template will create infrastructure and deploy code to Azure. If you don't have an Azure Subscription, you can sign up for a [free account here](https://azure.microsoft.com/free/). Make sure you have the contributor role in the Azure subscription.
 
-- OS
-- Library version
-- ...
+The following prerequisites are required to use this application. Please ensure that you have them all installed locally.
 
-### Installation
-
-(ideally very short)
-
-- npm install [package name]
-- mvn install
-- ...
+- [Azure Developer CLI](https://aka.ms/azd-install)
+- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) 
 
 ### Quickstart
-(Add steps to get up and running quickly)
 
-1. git clone [repository clone url]
-2. cd [repository name]
-3. ...
+To learn how to get started with any template, follow the steps in [this quickstart](https://learn.microsoft.com/azure/cosmos-db/table/quickstart-dotnet) with this template (`cosmos-db-table-dotnet-quickstart`).
 
+This quickstart will show you how to authenticate on Azure, initialize using a template, provision infrastructure and deploy code on Azure via the following commands:
 
-## Demo
+```bash
+# Log in to azd. Only required once per-install.
+azd auth login
 
-A demo app is included to show how to use the project.
+# First-time project setup. Initialize a project in the current directory, using this template.
+# Omit the --template argument if you are running in a development container.
+azd init --template cosmos-db-table-dotnet-quickstart
 
-To run the demo, follow these steps:
+# Provision and deploy to Azure
+azd up
+```
 
-(Add steps to start up the demo)
+### Application Architecture
 
-1.
-2.
-3.
+This application utilizes the following Azure resources:
 
-## Resources
+- [**Azure Container Registry**](https://learn.microsoft.com/azure/container-registry/)
+    - This services hosts the container image.
+- [**Azure Container Apps**](https://learn.microsoft.com/azure/container-apps/)
+    - This service hosts the ASP.NET Blazor web application.
+- [**Azure Cosmos DB for Table**](https://learn.microsoft.com/azure/cosmos-db/) 
+    - This service stores the table data.
 
-(Any additional resources or related projects)
+Here's a high level architecture diagram that illustrates these components. Notice that these are all contained within a single **resource group**, that will be created for you when you create the resources.
 
-- Link to supporting information
-- Link to similar sample
-- ...
+```mermaid
+%%{ init: { 'theme': 'base', 'themeVariables': { 'background': '#243A5E', 'primaryColor': '#50E6FF', 'primaryBorderColor': '#243A5E', 'tertiaryBorderColor': '#50E6FF', 'tertiaryColor': '#243A5E', 'fontFamily': 'Segoe UI', 'lineColor': '#FFFFFF', 'primaryTextColor': '#243A5E', 'tertiaryTextColor': '#FFFFFF' } }}%%
+flowchart TB
+    subgraph web-app[Azure Container Apps]
+        app-framework([.NET 8 - Blazor])
+    end
+    subgraph cosmos-db[Azure Cosmos for Table]
+        subgraph database-cosmicworks[Database: cosmicworks]
+            subgraph container-products[Container: products]
+                prd-yamba[Product: Yamba Surfboard]
+                prd-kiama-classic[Product: Kiama Classic Surfboard]
+            end
+        end
+    end
+    web-app --> cosmos-db
+```
+
+### Cost of provisioning and deploying this template
+
+This template provisions resources to an Azure subscription that you will select upon provisioning them. Refer to the [Pricing calculator for Microsoft Azure](https://azure.microsoft.com/pricing/calculator/) to estimate the cost you might incur when this template is running on Azure and, if needed, update the included Azure resource definitions found in [`infra/main.bicep`](infra/main.bicep) to suit your needs.
+
+### Application Code
+
+This template is structured to follow the [Azure Developer CLI](https://aka.ms/azure-dev/overview). You can learn more about `azd` architecture in [the official documentation](https://learn.microsoft.com/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create#understand-the-azd-architecture).
+
+### Next Steps
+
+At this point, you have a complete application deployed on Azure. But there is much more that the Azure Developer CLI can do. These next steps will introduce you to additional commands that will make creating applications on Azure much easier. Using the Azure Developer CLI, you can setup your pipelines, monitor your application, test and debug locally.
+
+- [`azd pipeline config`](https://learn.microsoft.com/azure/developer/azure-developer-cli/configure-devops-pipeline?tabs=GitHub) - to configure a CI/CD pipeline (using GitHub Actions or Azure DevOps) to deploy your application whenever code is pushed to the main branch. 
+
+- [Run and Debug Locally](https://learn.microsoft.com/azure/developer/azure-developer-cli/debug?pivots=ide-vs-code) - using Visual Studio Code and the Azure Developer CLI extension
+
+- [`azd down`](https://learn.microsoft.com/azure/developer/azure-developer-cli/reference#azd-down) - to delete all the Azure resources created with this template 
