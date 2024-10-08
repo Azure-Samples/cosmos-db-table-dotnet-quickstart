@@ -62,24 +62,24 @@ internal sealed class DemoService(TableClient client) : IDemoService
         }
 
         {
-            // <read_item>
+            // <read_entity>
             Response<Product> response = await client.GetEntityAsync<Product>(
                 rowKey: "68719518391",
                 partitionKey: "gear-surf-surfboards"
             );
-            // </read_item>
+            // </read_entity>
             await writeOutputAync($"Read entity row key:\t{response.Value.RowKey}");
             await writeOutputAync($"Read entity:\t{response.Value}");
             await writeOutputAync($"Status code:\t{response.GetRawResponse().Status}");
         }
 
         {
-            // <query_items>
+            // <query_entities>
             string category = "gear-surf-surfboards";
             AsyncPageable<Product> results = client.QueryAsync<Product>(
                 product => product.PartitionKey == category
             );
-            // </query_items>
+            // </query_entities>
             await writeOutputAync($"Ran query");
 
             // <parse_results>
