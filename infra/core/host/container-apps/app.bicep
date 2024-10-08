@@ -8,7 +8,6 @@ param tags object = {}
 param parentEnvironmentName string
 
 @description('Specifies the docker container image to deploy.')
-//param containerImage string = 'mcr.microsoft.com/dotnet/aspnet:8.0'
 param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
 @description('Specifies the container port.')

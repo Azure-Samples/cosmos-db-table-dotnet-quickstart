@@ -1,4 +1,4 @@
-metadata description = 'Create an Azure Cosmos DB for Table table.'
+metadata description = 'Create an Azure Cosmos DB for NoSQL database.'
 
 param name string
 param tags object = {}
@@ -27,7 +27,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
   name: parentAccountName
 }
 
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2024-05-15' = {
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-05-15' = {
   name: name
   parent: account
   tags: tags
@@ -39,4 +39,4 @@ resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2024-05-15' = {
   }
 }
 
-output name string = table.name
+output name string = database.name

@@ -4,7 +4,7 @@ This is a simple Blazor web application to illustrate common basic usage of Azur
 
 When you are finished, you will have a fully functional web application deployed to Azure.
 
-![Screenshot of the deployed web application.](assets/cosmos-table-app.png)
+![Screenshot of the deployed web application.](assets/web.png)
 
 <sup>Screenshot of the deployed web application.</sup>
 
@@ -44,7 +44,7 @@ This application utilizes the following Azure resources:
 - [**Azure Container Apps**](https://learn.microsoft.com/azure/container-apps/)
     - This service hosts the ASP.NET Blazor web application.
 - [**Azure Cosmos DB for Table**](https://learn.microsoft.com/azure/cosmos-db/) 
-    - This service stores the table data.
+    - This service stores the Table data.
 
 Here's a high level architecture diagram that illustrates these components. Notice that these are all contained within a single **resource group**, that will be created for you when you create the resources.
 
@@ -54,12 +54,10 @@ flowchart TB
     subgraph web-app[Azure Container Apps]
         app-framework([.NET 8 - Blazor])
     end
-    subgraph cosmos-db[Azure Cosmos for Table]
-        subgraph database-cosmicworks[Database: cosmicworks]
-            subgraph container-products[Container: products]
-                prd-yamba[Product: Yamba Surfboard]
-                prd-kiama-classic[Product: Kiama Classic Surfboard]
-            end
+    subgraph cosmos-db[Azure Cosmos DB]
+        subgraph table-cosmicworks-products[Database: cosmicworks-products]
+            prd-yamba[Product: Yamba Surfboard]
+            prd-kiama-classic[Product: Kiama Classic Surfboard]
         end
     end
     web-app --> cosmos-db

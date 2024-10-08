@@ -17,8 +17,6 @@ param cosmosDbAccountName string = ''
 param containerRegistryName string = ''
 param containerAppsEnvName string = ''
 param containerAppsAppName string = ''
-param userAssignedIdentityName string = ''
-param kvName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
 param serviceName string = 'web'
@@ -36,59 +34,8 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   tags: tags
 }
 
-module kv 'core/security/keyvault/keyvault.bicep' = {
-  name: 'kv'
-  scope: resourceGroup
-  params: {
-    name: !empty(kvName) ? kvName : '${abbreviations.keyVault}-${resourceToken}'
-    location: location
-    tags: tags
-    principalId: principalId
-  }
-}
-
-module kvSecret 'core/security/keyvault/keyvault-secret.bicep' = {
-  name: 'kvSecret'
-  scope: resourceGroup
-  params: {
-    keyVaultName: kv.outputs.name
-    name: 'cosmosconnectionstring'
-    secretValue: account.outputs.connectionString
-  }
-}
-
-// Give the API access to KeyVault
-module apiKeyVaultAccess 'core/security/keyvault/keyvault-access.bicep' = {
-  name: 'api-keyvault-access'
-  scope: resourceGroup
-  params: {
-    keyVaultName: kv.outputs.name
-    principalId: identity.outputs.principalId
-  }
-}
-
-// Give the User access to KeyVault
-module userKeyVaultAccess 'core/security/keyvault/keyvault-access.bicep' = {
-  name: 'user-keyvault-access'
-  scope: resourceGroup
-  params: {
-    keyVaultName: kv.outputs.name
-    principalId: principalId
-  }
-}
-
-module identity 'app/identity.bicep' = {
-  name: 'identity'
-  scope: resourceGroup
-  params: {
-    identityName: !empty(userAssignedIdentityName) ? userAssignedIdentityName : '${abbreviations.userAssignedIdentity}-${resourceToken}'
-    location: location
-    tags: tags
-  }
-}
-
-module account 'app/account.bicep' = {
-  name: 'account'
+module database 'app/database.bicep' = {
+  name: 'database'
   scope: resourceGroup
   params: {
     accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
@@ -101,7 +48,7 @@ module data 'app/data.bicep' = {
   name: 'data'
   scope: resourceGroup
   params: {
-    databaseAccountName: account.outputs.accountName
+    databaseAccountName: database.outputs.accountName
     tags: tags
   }
 }
@@ -122,21 +69,27 @@ module web 'app/web.bicep' = {
   params: {
     envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
     appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
-    databaseAccountEndpoint: account.outputs.endpoint
-    userAssignedManagedIdentity: {
-      resourceId: identity.outputs.resourceId
-      clientId: identity.outputs.clientId
-    }
+    databaseAccountEndpoint: database.outputs.endpoint
+    databaseTableName: data.outputs.table.name
     location: location
     tags: tags
     serviceTag: serviceName
-    keyVaultEndpoint: kv.outputs.endpoint
+  }
+}
+
+module security 'app/security.bicep' = {
+  name: 'security'
+  scope: resourceGroup
+  params: {
+    databaseAccountName: database.outputs.accountName
+    appPrincipalId: web.outputs.systemAssignedManagedIdentityPrincipalId
+    userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 
 // Database outputs
-output AZURE_COSMOS_ENDPOINT string = account.outputs.endpoint
-output AZURE_COSMOS_TABLE_NAMES array = map(data.outputs.tables, c => c.name)
+output AZURE_COSMOS_DB_TABLE_ENDPOINT string = database.outputs.endpoint
+output AZURE_COSMOS_DB_TABLE_NAME string = data.outputs.table.name
 
 // Container outputs
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
@@ -146,8 +99,5 @@ output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 output AZURE_CONTAINER_APP_ENDPOINT string = web.outputs.endpoint
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = web.outputs.envName
 
-// Identity outputs
-output AZURE_USER_ASSIGNED_IDENTITY_NAME string = identity.outputs.name
-
 // Security outputs
-output KEYVAULT_ENDPOINT string = kv.outputs.endpoint
+output AZURE_TABLE_ROLE_DEFINITION_ID string = security.outputs.roleDefinitions.table
