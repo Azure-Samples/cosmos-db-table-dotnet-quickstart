@@ -2,8 +2,5 @@
   "containerRegistry": "containerreg",
   "containerAppsEnv": "container-env",
   "containerAppsApp": "container-app",
-  "cosmosDbAccount": "cosmos-db-account",
-  "openAiAccount": "openai",
-  "keyVault": "keyvault",
-  "userAssignedIdentity": "ua-id"
+  "cosmosDbAccount": "cosmos-db-table"
 }

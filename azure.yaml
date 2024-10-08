@@ -15,19 +15,15 @@ hooks:
   postprovision:
     windows:
       run: |
-        dotnet user-secrets set "COSMOS_TABLE_ENDPOINT" "$env:COSMOS_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
-        Write-Host ""
-        Write-Host "View the running web application in Azure Container Apps:"
-        Write-Host "$env:AZURE_CONTAINER_APP_ENDPOINT" -ForegroundColor Cyan
-      shell: sh
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$env:AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_NAME" "$env:AZURE_COSMOS_DB_TABLE_NAME" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
+      shell: pwsh
       continueOnError: false
       interactive: true
     posix:
       run: |
-        dotnet user-secrets set "COSMOS_TABLE_ENDPOINT" "$env:$COSMOS_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
-        echo ""
-        echo "View the running web application in Azure Container Apps:"
-        echo -e "\033[0;36m$AZURE_CONTAINER_APP_ENDPOINT\033[0m"
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_NAME" "$AZURE_COSMOS_DB_TABLE_NAME" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
       shell: sh
       continueOnError: false
       interactive: true

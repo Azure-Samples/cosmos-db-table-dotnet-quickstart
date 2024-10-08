@@ -8,7 +8,6 @@ param tags object = {}
 param parentEnvironmentName string
 
 @description('Specifies the docker container image to deploy.')
-//param containerImage string = 'mcr.microsoft.com/dotnet/aspnet:8.0'
 param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
 @description('Specifies the container port.')
@@ -73,6 +72,15 @@ param enableSystemAssignedManagedIdentity bool = false
 @description('List of user-assigned managed identities. Defaults to an empty array.')
 param userAssignedManagedIdentityIds string[] = []
 
+@allowed([
+  'auto'
+  'http'
+  'http2'
+  'tcp'
+])
+@description('Transport protocol. Defaults to "auto".')
+param transport string = 'auto'
+
 resource environment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
   name: parentEnvironmentName
 }
@@ -91,7 +99,7 @@ resource app 'Microsoft.App/containerApps@2023-05-01' = {
       ingress: ingressEnabled ? {
         external: externalAccess
         targetPort: targetPort
-        transport: 'auto'
+        transport: transport
         corsPolicy: {
           allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
         }

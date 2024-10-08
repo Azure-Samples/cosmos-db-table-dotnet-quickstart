@@ -15,4 +15,3 @@ module cosmosDbAccount '../core/database/cosmos-db/table/account.bicep' = {
 
 output endpoint string = cosmosDbAccount.outputs.endpoint
 output accountName string = cosmosDbAccount.outputs.name
-output connectionString string = cosmosDbAccount.outputs.connectionString
