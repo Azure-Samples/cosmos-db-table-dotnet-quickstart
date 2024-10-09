@@ -9,14 +9,11 @@ param definitionName string
 @description('An array of data actions that are allowed. Defaults to an empty array.')
 param permissionsDataActions string[] = []
 
-@description('An array of data actions that are denied. Defaults to an empty array.')
-param permissionsNonDataActions string[] = []
-
-resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
+resource account 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: targetAccountName
 }
 
-resource definition 'Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions@2024-05-15' = {
+resource definition 'Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions@2023-04-15' = {
   name: guid('table-role-definition', account.id)
   parent: account
   properties: {
@@ -26,7 +23,6 @@ resource definition 'Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions@
     permissions: [
       {
         dataActions: permissionsDataActions
-        notDataActions: permissionsNonDataActions
       }
     ]
     roleName: definitionName

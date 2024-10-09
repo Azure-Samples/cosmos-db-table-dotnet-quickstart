@@ -20,15 +20,14 @@ internal sealed class DemoService(TableClient client) : IDemoService
 
         {
             // <create_entity>
-            Product entity = new(
-                name: "Yamba Surfboard",
-                quantity: 12,
-                price: 850.00m,
-                clearance: false
-            )
+            Product entity = new()
             {
                 RowKey = "68719518391",
                 PartitionKey = "gear-surf-surfboards",
+                Name = "Surfboard",
+                Quantity = 10,
+                Price = 300.00m,
+                Clearance = true
             };
 
             Response response = await client.UpsertEntityAsync<Product>(
@@ -41,15 +40,14 @@ internal sealed class DemoService(TableClient client) : IDemoService
         }
 
         {
-            Product entity = new(
-                name: "Kiama Classic Surfboard",
-                quantity: 25,
-                price: 790.00m,
-                clearance: false
-            )
+            Product entity = new()
             {
                 RowKey = "68719518371",
-                PartitionKey = "gear-surf-surfboards"
+                PartitionKey = "gear-surf-surfboards",
+                Name = "Kiama Classic Surfboard",
+                Quantity = 25,
+                Price = 790.00m,
+                Clearance = false
             };
 
 
@@ -92,7 +90,7 @@ internal sealed class DemoService(TableClient client) : IDemoService
 
             foreach (var entity in entities)
             {
-                await writeOutputAync($"Found entity:\t{entity.name}\t[{entity.RowKey}]");
+                await writeOutputAync($"Found entity:\t{entity.Name}\t[{entity.RowKey}]");
             }
         }
     }
