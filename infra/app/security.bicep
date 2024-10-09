@@ -39,7 +39,7 @@ module nosqlUserAssignment '../core/database/cosmos-db/table/role/assignment.bic
   params: {
     targetAccountName: database.name // Existing account
     roleDefinitionId: nosqlDefinition.outputs.id // New role definition
-    principalId: userPrincipalId ?? '' // Principal to assign role
+    principalId: userPrincipalId // Principal to assign role
   }
 }
 
