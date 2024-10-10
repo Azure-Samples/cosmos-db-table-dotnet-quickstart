@@ -1,0 +1,39 @@
+name: Create release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  create-release:    
+    name: Create release
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Generate output
+        id: generate
+        run: |
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "tag=release-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Create compressed folder
+        run: |
+          mkdir out
+          git archive --format=zip --output out/project.zip main
+      - name: Generate artifact attestation
+        id: attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: out/project.zip
+      - name: Push release
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        run: |
+          gh release create ${{ steps.generate.outputs.tag }} \
+            'out/project.zip#Project folder' \
+            '${{ steps.attestation.outputs.bundle-path }}#Attestation' \
+            --title 'Release ${{ steps.generate.outputs.date }}'
