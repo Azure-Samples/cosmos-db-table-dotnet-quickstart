@@ -13,6 +13,7 @@ param location string
 param principalId string = ''
 
 // Optional parameters
+param logWorkspaceName string = ''
 param cosmosDbAccountName string = ''
 param containerRegistryName string = ''
 param containerAppsEnvName string = ''
@@ -34,6 +35,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   tags: tags
 }
 
+module identity 'app/identity.bicep' = {
+  name: 'identity'
+  scope: resourceGroup
+  params: {
+    identityName: '${abbreviations.userAssignedIdentity}-${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
 module database 'app/database.bicep' = {
   name: 'database'
   scope: resourceGroup
@@ -41,15 +52,8 @@ module database 'app/database.bicep' = {
     accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
     location: location
     tags: tags
-  }
-}
-
-module data 'app/data.bicep' = {
-  name: 'data'
-  scope: resourceGroup
-  params: {
-    databaseAccountName: database.outputs.accountName
-    tags: tags
+    appPrincipalId: identity.outputs.clientId
+    userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 
@@ -57,7 +61,9 @@ module registry 'app/registry.bicep' = {
   name: 'registry'
   scope: resourceGroup
   params: {
-    registryName: !empty(containerRegistryName) ? containerRegistryName : '${abbreviations.containerRegistry}${resourceToken}'
+    registryName: !empty(containerRegistryName)
+      ? containerRegistryName
+      : '${abbreviations.containerRegistry}${resourceToken}'
     location: location
     tags: tags
   }
@@ -67,13 +73,15 @@ module web 'app/web.bicep' = {
   name: serviceName
   scope: resourceGroup
   params: {
+    workspaceName: !empty(logWorkspaceName) ? logWorkspaceName : '${abbreviations.logAnalyticsWorkspace}-${resourceToken}'
     envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
     appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
-    databaseAccountEndpoint: database.outputs.endpoint
-    databaseTableName: data.outputs.table.name
     location: location
     tags: tags
     serviceTag: serviceName
+    appPrincipalId: identity.outputs.clientId
+    databaseAccountEndpoint: database.outputs.endpoint
+    databaseTableName: database.outputs.tableName
   }
 }
 
@@ -81,15 +89,14 @@ module security 'app/security.bicep' = {
   name: 'security'
   scope: resourceGroup
   params: {
-    databaseAccountName: database.outputs.accountName
-    appPrincipalId: web.outputs.systemAssignedManagedIdentityPrincipalId
+    containerRegistryResourceId: registry.outputs.resourceId
     userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 
 // Database outputs
 output AZURE_COSMOS_DB_TABLE_ENDPOINT string = database.outputs.endpoint
-output AZURE_COSMOS_DB_TABLE_NAME string = data.outputs.table.name
+output AZURE_COSMOS_DB_TABLE_NAME string = database.outputs.tableName
 
 // Container outputs
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
@@ -98,6 +105,3 @@ output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 // Application outputs
 output AZURE_CONTAINER_APP_ENDPOINT string = web.outputs.endpoint
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = web.outputs.envName
-
-// Security outputs
-output AZURE_TABLE_ROLE_DEFINITION_ID string = security.outputs.roleDefinitions.table
