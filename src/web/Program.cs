@@ -1,37 +1,26 @@
 using Azure.Data.Tables;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.Azure.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-if (builder.Environment.IsDevelopment())
+builder.Services.AddSingleton<TableClient>((_) =>
 {
+    // <create_client>
+    TableServiceClient serviceClient = new(
+        endpoint: new Uri(builder.Configuration["AZURE_COSMOS_DB_TABLE_ENDPOINT"]!),
+        tokenCredential: new DefaultAzureCredential()
+    );
 
-    var secretClient = new SecretClient(new Uri(builder.Configuration["KEYVAULT_ENDPOINT"]), new DefaultAzureCredential());
-    var secretCosmos = await secretClient.GetSecretAsync("cosmosconnectionstring");
-    
-    builder.Services.AddSingleton<TableServiceClient>((_) =>
-    {
-        // </create_client>
-        return new TableServiceClient(secretCosmos.Value.Value);
-    });
-}
-else
-{
-    var secretClient = new SecretClient(new Uri(builder.Configuration["KEYVAULT_ENDPOINT"]), new DefaultAzureCredential());
-    var secretCosmos = await secretClient.GetSecretAsync("cosmosconnectionstring");
-    
-    builder.Services.AddSingleton<TableServiceClient>((_) =>
-    {
-        // </create_client>
-        return new TableServiceClient(secretCosmos.Value.Value);
-    });
-}
+    TableClient client = serviceClient.GetTableClient(
+        tableName: builder.Configuration["AZURE_COSMOS_DB_TABLE_NAME"]!
+    );
+    // </create_client>
+    return client;
+});
 
-builder.Services.AddTransient<ITableService, TableService>();
+builder.Services.AddTransient<IDemoService, DemoService>();
 
 var app = builder.Build();
 

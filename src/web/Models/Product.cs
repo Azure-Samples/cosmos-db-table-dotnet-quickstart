@@ -4,21 +4,22 @@ using Azure.Data.Tables;
 namespace Cosmos.Samples.Table.Quickstart.Web.Models;
 
 // <model>
-// C# record type for items in the table
 public record Product : ITableEntity
 {
-    public string RowKey { get; set; } = default!;
+    public string RowKey { get; set; } = $"{Guid.NewGuid()}";
 
-    public string PartitionKey { get; set; } = default!;
+    public string PartitionKey { get; set; } = String.Empty;
 
-    public string Name { get; init; } = default!;
+    public string Name { get; set; } = String.Empty;
 
-    public int Quantity { get; init; }
+    public int Quantity { get; set; } = 0;
 
-    public bool Sale { get; init; }
+    public decimal Price { get; set; } = 0.0m;
 
-    public ETag ETag { get; set; } = default!;
+    public bool Clearance { get; set; } = false;
 
-    public DateTimeOffset? Timestamp { get; set; } = default!;
-}
+    public ETag ETag { get; set; } = ETag.All;
+
+    public DateTimeOffset? Timestamp { get; set; }
+};
 // </model>

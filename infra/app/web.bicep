@@ -5,18 +5,12 @@ param appName string
 param serviceTag string
 param location string = resourceGroup().location
 param tags object = {}
-param keyVaultEndpoint string
 
-@description('Endpoint for Azure Cosmos DB for NoSQL account.')
+@description('Endpoint for Azure Cosmos DB for Table account.')
 param databaseAccountEndpoint string
 
-type managedIdentity = {
-  resourceId: string
-  clientId: string
-}
-
-@description('Unique identifier for user-assigned managed identity.')
-param userAssignedManagedIdentity managedIdentity
+@description('Name of the referenced table.')
+param databaseTableName string
 
 module containerAppsEnvironment '../core/host/container-apps/environments/managed.bicep' = {
   name: 'container-apps-env'
@@ -39,19 +33,11 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
     secrets: [
       {
         name: 'azure-cosmos-db-table-endpoint' // Create a uniquely-named secret
-        value: databaseAccountEndpoint // NoSQL database account endpoint
+        value: databaseAccountEndpoint // Table database account endpoint
       }
       {
-        name: 'azure-managed-identity-client-id' // Create a uniquely-named secret
-        value: userAssignedManagedIdentity.clientId // Client ID of user-assigned managed identity
-      }
-      {
-        name: 'keyvault-endpoint' // Create a uniquely-named secret
-        value: keyVaultEndpoint // Client ID of user-assigned managed identity
-      }
-      {
-        name: 'azure-client-id' // Create a uniquely-named secret
-        value: userAssignedManagedIdentity.clientId // Client ID of user-assigned managed identity
+        name: 'azure-cosmos-db-table-name' // Create a uniquely-named secret
+        value: databaseTableName // Table name
       }
     ]
     environmentVariables: [
@@ -60,26 +46,16 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
         secretRef: 'azure-cosmos-db-table-endpoint' // Reference to secret
       }
       {
-        name: 'AZURE_MANAGED_IDENTITY_CLIENT_ID'
-        secretRef: 'azure-managed-identity-client-id'
-      }
-      {
-        name: 'KEYVAULT_ENDPOINT'
-        secretRef: 'keyvault-endpoint'
-      }
-      {
-        name: 'AZURE_CLIENT_ID'
-        secretRef: 'azure-client-id'
+        name: 'AZURE_COSMOS_DB_TABLE_NAME' // Name of the environment variable referenced in the application
+        secretRef: 'azure-cosmos-db-table-name' // Reference to secret
       }
     ]
     targetPort: 8080
-    enableSystemAssignedManagedIdentity: false
-    userAssignedManagedIdentityIds: [
-      userAssignedManagedIdentity.resourceId
-    ]
+    enableSystemAssignedManagedIdentity: true
     containerImage: 'mcr.microsoft.com/dotnet/samples:aspnetapp'
   }
 }
 
 output endpoint string = containerAppsApp.outputs.endpoint
 output envName string = containerAppsApp.outputs.name
+output systemAssignedManagedIdentityPrincipalId string =  containerAppsApp.outputs.systemAssignedManagedIdentityPrincipalId
