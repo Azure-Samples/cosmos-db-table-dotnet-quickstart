@@ -52,7 +52,7 @@ module database 'app/database.bicep' = {
     accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
     location: location
     tags: tags
-    appPrincipalId: identity.outputs.clientId
+    appPrincipalId: identity.outputs.principalId
     userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
@@ -79,18 +79,10 @@ module web 'app/web.bicep' = {
     location: location
     tags: tags
     serviceTag: serviceName
-    appPrincipalId: identity.outputs.clientId
+    appPrincipalId: identity.outputs.principalId
+    appClientId: identity.outputs.clientId
     databaseAccountEndpoint: database.outputs.endpoint
     databaseTableName: database.outputs.tableName
-  }
-}
-
-module security 'app/security.bicep' = {
-  name: 'security'
-  scope: resourceGroup
-  params: {
-    containerRegistryResourceId: registry.outputs.resourceId
-    userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 

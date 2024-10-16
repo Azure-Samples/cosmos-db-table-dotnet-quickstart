@@ -10,12 +10,6 @@ param appPrincipalId string
 @description('Id of the user principals to assign database and application roles.')
 param userPrincipalId string = ''
 
-var table = {
-  name: 'cosmicworks-products' // Based on AdventureWorksLT data set
-  autoscale: true // Scale at the database level
-  throughput: 1000 // Enable autoscale with a minimum of 100 RUs and a maximum of 1,000 RUs
-}
-
 module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.6.1' = {
   name: 'cosmos-db-account'
   params: {
@@ -25,11 +19,10 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.6.1' = 
     capabilitiesToAdd: [
       'EnableTable'
     ]
-    disableKeyBasedMetadataWriteAccess: true
     disableLocalAuth: true
     sqlRoleDefinitions: [
       {
-        name: 'Write to Azure Cosmos DB for Table data plane'
+        name: 'table-data-plane-contributor'
         dataAction: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata' // Read account metadata
           'Microsoft.DocumentDB/databaseAccounts/tables/*' // Manage tables
@@ -47,13 +40,29 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.6.1' = 
           ]
         : []
     )
-    /*tables: [
-      {
-        name: table.name
-        autoscale: table.autoscale
-        throughput: table.throughput
+  }
+}
+
+resource account 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+  name: accountName
+}
+
+resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2023-04-15' = {
+  name: 'cosmicworks-products'
+  dependsOn: [
+    cosmosDbAccount // Create an artifical wait for the account to be created
+  ]
+  parent: account
+  tags: tags
+  properties: {
+    options: {
+      autoscaleSettings: {
+        maxThroughput: 1000
       }
-    ]*/
+    } 
+    resource: {
+      id: 'cosmicworks-products'
+    }
   }
 }
 
