@@ -17,6 +17,7 @@ builder.Services.AddSingleton<TableClient>((_) =>
         tableName: builder.Configuration["AZURE_COSMOS_DB_TABLE_NAME"]!
     );
     // </create_client>
+
     return client;
 });
 

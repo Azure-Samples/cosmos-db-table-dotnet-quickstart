@@ -19,7 +19,6 @@ internal sealed class DemoService(TableClient client) : IDemoService
         await writeOutputAync($"Get table:\t{client.Name}");
 
         {
-            // <create_entity>
             Product entity = new()
             {
                 RowKey = "68719518391",
@@ -34,7 +33,7 @@ internal sealed class DemoService(TableClient client) : IDemoService
                 entity: entity,
                 mode: TableUpdateMode.Replace
             );
-            // </create_entity>
+
             await writeOutputAync($"Upserted entity:\t{entity}");
             await writeOutputAync($"Status code:\t{response.Status}");
         }
@@ -60,33 +59,29 @@ internal sealed class DemoService(TableClient client) : IDemoService
         }
 
         {
-            // <read_entity>
             Response<Product> response = await client.GetEntityAsync<Product>(
                 rowKey: "68719518391",
                 partitionKey: "gear-surf-surfboards"
             );
-            // </read_entity>
+
             await writeOutputAync($"Read entity row key:\t{response.Value.RowKey}");
             await writeOutputAync($"Read entity:\t{response.Value}");
             await writeOutputAync($"Status code:\t{response.GetRawResponse().Status}");
         }
 
         {
-            // <query_entities>
             string category = "gear-surf-surfboards";
             AsyncPageable<Product> results = client.QueryAsync<Product>(
                 product => product.PartitionKey == category
             );
-            // </query_entities>
+
             await writeOutputAync($"Ran query");
 
-            // <parse_results>
             List<Product> entities = new();
             await foreach (Product product in results)
             {
                 entities.Add(product);
             }
-            // </parse_results>
 
             foreach (var entity in entities)
             {
