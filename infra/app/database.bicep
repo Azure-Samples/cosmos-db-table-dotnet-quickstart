@@ -40,6 +40,12 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.6.1' = 
           ]
         : []
     )
+    tables: [
+      {
+        name: 'cosmicworks-products'
+        maxThroughput: 1000
+      }
+    ]
   }
 }
 
