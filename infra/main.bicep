@@ -80,7 +80,7 @@ module web 'app/web.bicep' = {
     tags: tags
     serviceTag: serviceName
     appPrincipalId: identity.outputs.principalId
-    appClientId: identity.outputs.clientId
+    appResourceId: identity.outputs.resourceId
     databaseAccountEndpoint: database.outputs.endpoint
     databaseTableName: database.outputs.tableName
   }

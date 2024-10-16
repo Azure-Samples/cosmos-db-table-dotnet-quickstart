@@ -16,8 +16,8 @@ param databaseTableName string
 @description('Client ID of the service principal to assign database and application roles.')
 param appClientId string
 
-@description('ID of the service principal to assign database and application roles.')
-param appPrincipalId string
+@description('Resource ID of the service principal to assign database and application roles.')
+param appResourceId string
 
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
   name: 'log-analytics-workspace'
@@ -51,7 +51,7 @@ module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
-        appPrincipalId
+        appResourceId
       ]
     }
     secrets: {
