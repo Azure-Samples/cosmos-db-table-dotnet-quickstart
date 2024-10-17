@@ -3,7 +3,6 @@ using Azure.Data.Tables;
 
 namespace Cosmos.Samples.Table.Quickstart.Web.Models;
 
-// <model>
 public record Product : ITableEntity
 {
     public string RowKey { get; set; } = $"{Guid.NewGuid()}";
@@ -22,4 +21,3 @@ public record Product : ITableEntity
 
     public DateTimeOffset? Timestamp { get; set; }
 };
-// </model>
