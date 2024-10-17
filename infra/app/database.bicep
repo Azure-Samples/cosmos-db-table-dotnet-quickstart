@@ -10,7 +10,7 @@ param appPrincipalId string
 @description('Id of the user principals to assign database and application roles.')
 param userPrincipalId string = ''
 
-module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.6.1' = {
+module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.0' = {
   name: 'cosmos-db-account'
   params: {
     name: accountName
