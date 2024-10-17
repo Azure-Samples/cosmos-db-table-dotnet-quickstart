@@ -23,7 +23,7 @@ internal sealed class DemoService(TableClient client) : IDemoService
             {
                 RowKey = "68719518391",
                 PartitionKey = "gear-surf-surfboards",
-                Name = "Surfboard",
+                Name = "Yamba Surfboard",
                 Quantity = 10,
                 Price = 300.00m,
                 Clearance = true
