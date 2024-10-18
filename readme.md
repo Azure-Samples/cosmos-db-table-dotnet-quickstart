@@ -4,8 +4,7 @@ name: "Quickstart: Azure Cosmos DB for Table and Azure SDK for .NET"
 description: This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table and the Azure SDK for .NET.
 urlFragment: template
 languages:
-- typescript
-- javascript
+- csharp
 - azdeveloper
 products:
 - azure-cosmos-db
