@@ -10,12 +10,16 @@ internal interface IDemoService
     string GetEndpoint();
 }
 
-internal sealed class DemoService(TableClient client) : IDemoService
+internal sealed class DemoService(TableServiceClient serviceClient) : IDemoService
 {
-    public string GetEndpoint() => $"{client.Uri.AbsoluteUri}";
+    public string GetEndpoint() => $"{serviceClient.Uri.AbsoluteUri}";
 
     public async Task RunAsync(Func<string, Task> writeOutputAync)
     {
+        TableClient client = serviceClient.GetTableClient(
+            tableName: "cosmicworks-products"
+        );        
+
         await writeOutputAync($"Get table:\t{client.Name}");
 
         {
