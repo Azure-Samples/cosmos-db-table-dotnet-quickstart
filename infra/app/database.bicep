@@ -15,11 +15,20 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.0' = 
   params: {
     name: accountName
     location: location
+    locations: [
+      {
+        failoverPriority: 0
+        locationName: location
+        isZoneRedundant: false
+      }
+    ]
     tags: tags
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuth: true
     capabilitiesToAdd: [
+      'EnableServerless'
       'EnableTable'
     ]
-    disableLocalAuth: true
     sqlRoleDefinitions: [
       {
         name: 'table-data-plane-contributor'
@@ -49,29 +58,4 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.0' = 
   }
 }
 
-resource account 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
-  name: accountName
-}
-
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2023-04-15' = {
-  name: 'cosmicworks-products'
-  dependsOn: [
-    cosmosDbAccount // Create an artifical wait for the account to be created
-  ]
-  parent: account
-  tags: tags
-  properties: {
-    options: {
-      autoscaleSettings: {
-        maxThroughput: 1000
-      }
-    } 
-    resource: {
-      id: 'cosmicworks-products'
-    }
-  }
-}
-
-output name string = cosmosDbAccount.outputs.name
 output endpoint string = cosmosDbAccount.outputs.endpoint
-output tableName string = table.name

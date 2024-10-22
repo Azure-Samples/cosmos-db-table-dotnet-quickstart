@@ -10,9 +10,6 @@ param tags object = {}
 @description('Endpoint for Azure Cosmos DB for Table account.')
 param databaseAccountEndpoint string
 
-@description('Name of the referenced table.')
-param databaseTableName string
-
 @description('Client ID of the service principal to assign database and application roles.')
 param appClientId string
 
@@ -35,6 +32,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.0
     location: location
     tags: tags
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    zoneRedundant: false
   }
 }
 
@@ -47,7 +45,13 @@ module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     tags: union(tags, { 'azd-service-name': serviceTag })
     ingressTargetPort: 8080
     ingressExternal: true
-    ingressTransport: 'auto'
+    ingressTransport: 'http'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -57,12 +61,8 @@ module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     secrets: {
       secureList: [
         {
-          name: 'azure-cosmos-db-table-endpoint'
+          name: 'azure-cosmos-db-nosql-endpoint'
           value: databaseAccountEndpoint
-        }
-        {
-          name: 'azure-cosmos-db-table-name'
-          value: databaseTableName
         }
         {
           name: 'user-assigned-managed-identity-client-id'
@@ -75,17 +75,13 @@ module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'web-front-end'
         resources: {
-          cpu: '0.25'
-          memory: '0.5Gi'
+          cpu: '1'
+          memory: '2Gi'
         }
         env: [
           {
-            name: 'AZURE_COSMOS_DB_TABLE_ENDPOINT'
-            secretRef: 'azure-cosmos-db-table-endpoint'
-          }
-          {
-            name: 'AZURE_COSMOS_DB_TABLE_NAME'
-            secretRef: 'azure-cosmos-db-table-name'
+            name: 'AZURE_COSMOS_DB_NOSQL_ENDPOINT'
+            secretRef: 'azure-cosmos-db-nosql-endpoint'
           }
           {
             name: 'AZURE_CLIENT_ID'
@@ -96,7 +92,3 @@ module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     ]
   }
 }
-
-output endpoint string = 'https://${containerAppsApp.outputs.fqdn}'
-output envName string = containerAppsApp.outputs.name
-output systemAssignedManagedIdentityPrincipalId string = containerAppsApp.outputs.systemAssignedMIPrincipalId

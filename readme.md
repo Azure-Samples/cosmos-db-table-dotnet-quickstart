@@ -1,7 +1,7 @@
 ---
 page_type: sample
 name: "Quickstart: Azure Cosmos DB for Table and Azure SDK for .NET"
-description: This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table and the Azure SDK for .NET.
+description: This is a simple ASP.NET web application to illustrate common basic usage of Azure Cosmos DB for Table and the Azure SDK for .NET.
 urlFragment: template
 languages:
 - csharp
@@ -10,35 +10,50 @@ products:
 - azure-cosmos-db
 ---
 
-# Quickstart: Azure Cosmos DB for Table - Azure SDK for .NET
+# Quickstart: Azure Cosmos DB for Table client library for .NET
 
-This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table with the Azure SDK for .NET.
-
-![Screenshot of the deployed web application.](assets/web.png)
-
-<sup>Screenshot of the deployed web application.</sup>
+This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for NoSQL's client library for .NET. This sample application accesses an existing account and tables using the [`Azure.Data.Tables`](https://www.nuget.org/packages/Azure.Data.Tables) and  [`Azure.Identity`](https://www.nuget.org/packages/Azure.Identity) libraries from NuGet.
 
 ### Prerequisites
 
-> *This template will create infrastructure and deploy code to Azure. If you don't have an Azure Subscription, you can sign up for a [free Azure account](https://azure.microsoft.com/free/). Make sure you have the contributor role in the Azure subscription.*
-
-The following prerequisites are required to use this application. Please ensure that you have them all installed locally.
-
+- [Docker](https://www.docker.com/)
 - [Azure Developer CLI](https://aka.ms/azd-install)
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) 
 
 ### Quickstart
 
-This quickstart will show you how to authenticate on Azure, initialize using a template, provision infrastructure and deploy code on Azure via the following commands:
+1. Log in to Azure Developer CLI.
 
-```bash
-# Log in to azd. Only required once per-install.
-azd auth login
+    ```bash
+    azd auth login
+    ```
 
-# First-time project setup. Initialize a project in the current directory, using this template.
-# Omit the --template argument if you are running in a development container.
-azd init --template cosmos-db-table-dotnet-quickstart
+    > [!TIP]
+    > This is only required once per-install.
 
-# Provision and deploy to Azure
-azd up
-```
+1. Initialize this template (`cosmos-db-table-dotnet-quickstart`) using `azd init`
+
+    ```bash
+    azd init --template cosmos-db-table-dotnet-quickstart
+    ```
+
+1. Ensure that **Docker** is running in your environment.
+
+1. Use `azd up` to provision your Azure infrastructure and deploy the web application to Azure.
+
+    ```bash
+    azd up
+    ```
+
+1. Observed the deployed web application
+
+    ![Screenshot of the deployed web application.](assets/web.png)
+
+1. (Optionally) Run this web application locally in the `src/web` folder: 
+
+    ```dotnetcli
+    dotnet watch run
+    ```
+
+    > [!IMPORTANT]
+    > When your Azure infrastructure is provisioned, the endpoint for your deployed Azure Cosmos DB for NoSQL account is automatically saved in the .NET user secrets store to make debugging easier. For more information, see [safe storage of app secrets in development](https://learn.microsoft.com/aspnet/core/security/app-secrets).

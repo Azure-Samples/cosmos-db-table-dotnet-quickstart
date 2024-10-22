@@ -1,14 +1,8 @@
-using Azure;
 using Azure.Data.Tables;
-using Azure.Data.Tables.Models;
-using Cosmos.Samples.Table.Quickstart.Web.Models;
+using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Models;
+using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services.Interfaces;
 
-internal interface IDemoService
-{
-    Task RunAsync(Func<string, Task> writeOutputAync);
-
-    string GetEndpoint();
-}
+namespace Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services;
 
 internal sealed class DemoService(TableServiceClient serviceClient) : IDemoService
 {

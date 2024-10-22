@@ -9,19 +9,21 @@ services:
     language: csharp
     host: containerapp
     docker:
-      path: ./Dockerfile
+      path: ../Dockerfile
       context: ../
+pipeline:
+  provider: github
 hooks:
   postprovision:
     windows:
       run: |
-        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$env:AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$env:AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
       shell: pwsh
       continueOnError: false
       interactive: true
     posix:
       run: |
-        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Cosmos.Samples.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
       shell: sh
       continueOnError: false
       interactive: true

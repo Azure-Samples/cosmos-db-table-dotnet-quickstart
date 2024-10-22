@@ -1,20 +1,22 @@
-using Azure.Data.Tables;
 using Azure.Identity;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services;
+using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services.Interfaces;
+using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<TableServiceClient>((_) =>
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<CosmosClient>((_) =>
 {
     // <create_client>
-    TableServiceClient serviceClient = new(
-        endpoint: new Uri(builder.Configuration["AZURE_COSMOS_DB_TABLE_ENDPOINT"]!),
+    CosmosClient client = new(
+        accountEndpoint: builder.Configuration["AZURE_COSMOS_DB_NOSQL_ENDPOINT"]!,
         tokenCredential: new DefaultAzureCredential()
     );
     // </create_client>
-
-    return serviceClient;
+    return client;
 });
 
 builder.Services.AddTransient<IDemoService, DemoService>();
@@ -25,11 +27,10 @@ app.UseDeveloperExceptionPage();
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseAntiforgery();
 
-app.UseRouting();
+app.MapStaticAssets();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();
