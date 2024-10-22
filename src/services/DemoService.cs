@@ -1,10 +1,11 @@
+using Azure;
 using Azure.Data.Tables;
-using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Models;
-using Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services.Interfaces;
+using Microsoft.Samples.Cosmos.Table.Quickstart.Models;
+using Microsoft.Samples.Cosmos.Table.Quickstart.Services.Interfaces;
 
-namespace Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services;
+namespace Microsoft.Samples.Cosmos.Table.Quickstart.Services;
 
-internal sealed class DemoService(TableServiceClient serviceClient) : IDemoService
+public sealed class DemoService(TableServiceClient serviceClient) : IDemoService
 {
     public string GetEndpoint() => $"{serviceClient.Uri.AbsoluteUri}";
 
@@ -12,7 +13,7 @@ internal sealed class DemoService(TableServiceClient serviceClient) : IDemoServi
     {
         TableClient client = serviceClient.GetTableClient(
             tableName: "cosmicworks-products"
-        );        
+        );
 
         await writeOutputAync($"Get table:\t{client.Name}");
 

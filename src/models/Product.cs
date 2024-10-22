@@ -1,7 +1,7 @@
 using Azure;
 using Azure.Data.Tables;
 
-namespace Microsoft.Samples.Cosmos.NoSQL.Quickstart.Models;
+namespace Microsoft.Samples.Cosmos.Table.Quickstart.Models;
 
 public record Product : ITableEntity
 {

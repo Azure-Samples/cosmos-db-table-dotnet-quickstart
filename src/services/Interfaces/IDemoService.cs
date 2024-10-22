@@ -1,4 +1,4 @@
-namespace Microsoft.Samples.Cosmos.NoSQL.Quickstart.Services.Interfaces;
+namespace Microsoft.Samples.Cosmos.Table.Quickstart.Services.Interfaces;
 
 public interface IDemoService
 {

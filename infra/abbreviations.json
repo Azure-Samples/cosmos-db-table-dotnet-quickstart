@@ -3,6 +3,6 @@
   "containerRegistry": "containerreg",
   "containerAppsEnv": "container-env",
   "containerAppsApp": "container-app",
-  "cosmosDbAccount": "cosmos-db-nosql",
+  "cosmosDbAccount": "cosmos-db-table",
   "userAssignedIdentity": "managed-identity"
 }
