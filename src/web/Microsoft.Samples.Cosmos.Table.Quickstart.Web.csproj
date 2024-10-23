@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>938c2273-843e-4d6e-98ce-7c6e979eba12</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.*" />
+    <PackageReference Include="Azure.Identity" Version="1.12.1" />
+    <PackageReference Include="System.Text.Json" Version="8.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\models\Microsoft.Samples.Cosmos.Table.Quickstart.Models.csproj" />
+    <ProjectReference Include="..\services\Microsoft.Samples.Cosmos.Table.Quickstart.Services.csproj" />
+  </ItemGroup>
+</Project>

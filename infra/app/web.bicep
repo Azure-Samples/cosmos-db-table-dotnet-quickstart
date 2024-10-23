@@ -1,5 +1,6 @@
 metadata description = 'Create web application resources.'
 
+param workspaceName string
 param envName string
 param appName string
 param serviceTag string
@@ -9,53 +10,86 @@ param tags object = {}
 @description('Endpoint for Azure Cosmos DB for Table account.')
 param databaseAccountEndpoint string
 
-@description('Name of the referenced table.')
-param databaseTableName string
+@description('Client ID of the service principal to assign database and application roles.')
+param appClientId string
 
-module containerAppsEnvironment '../core/host/container-apps/environments/managed.bicep' = {
-  name: 'container-apps-env'
+@description('Resource ID of the service principal to assign database and application roles.')
+param appResourceId string
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
+  name: 'log-analytics-workspace'
   params: {
-    name: envName
+    name: workspaceName
     location: location
     tags: tags
   }
 }
 
-module containerAppsApp '../core/host/container-apps/app.bicep' = {
-  name: 'container-apps-app'
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
+  name: 'container-apps-env'
   params: {
-    name: appName
-    parentEnvironmentName: containerAppsEnvironment.outputs.name
+    name: envName
     location: location
-    tags: union(tags, {
-        'azd-service-name': serviceTag
-      })
-    secrets: [
-      {
-        name: 'azure-cosmos-db-table-endpoint' // Create a uniquely-named secret
-        value: databaseAccountEndpoint // Table database account endpoint
-      }
-      {
-        name: 'azure-cosmos-db-table-name' // Create a uniquely-named secret
-        value: databaseTableName // Table name
-      }
-    ]
-    environmentVariables: [
-      {
-        name: 'AZURE_COSMOS_DB_TABLE_ENDPOINT' // Name of the environment variable referenced in the application
-        secretRef: 'azure-cosmos-db-table-endpoint' // Reference to secret
-      }
-      {
-        name: 'AZURE_COSMOS_DB_TABLE_NAME' // Name of the environment variable referenced in the application
-        secretRef: 'azure-cosmos-db-table-name' // Reference to secret
-      }
-    ]
-    targetPort: 8080
-    enableSystemAssignedManagedIdentity: true
-    containerImage: 'mcr.microsoft.com/dotnet/samples:aspnetapp'
+    tags: tags
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    zoneRedundant: false
   }
 }
 
-output endpoint string = containerAppsApp.outputs.endpoint
-output envName string = containerAppsApp.outputs.name
-output systemAssignedManagedIdentityPrincipalId string =  containerAppsApp.outputs.systemAssignedManagedIdentityPrincipalId
+module containerAppsApp 'br/public:avm/res/app/container-app:0.9.0' = {
+  name: 'container-apps-app'
+  params: {
+    name: appName
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': serviceTag })
+    ingressTargetPort: 8080
+    ingressExternal: true
+    ingressTransport: 'auto'
+    stickySessionsAffinity: 'sticky'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        appResourceId
+      ]
+    }
+    secrets: {
+      secureList: [
+        {
+          name: 'azure-cosmos-db-table-endpoint'
+          value: databaseAccountEndpoint
+        }
+        {
+          name: 'user-assigned-managed-identity-client-id'
+          value: appClientId
+        }
+      ]
+    }
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'web-front-end'
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+        env: [
+          {
+            name: 'AZURE_COSMOS_DB_TABLE_ENDPOINT'
+            secretRef: 'azure-cosmos-db-table-endpoint'
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            secretRef: 'user-assigned-managed-identity-client-id'
+          }
+        ]
+      }
+    ]
+  }
+}
