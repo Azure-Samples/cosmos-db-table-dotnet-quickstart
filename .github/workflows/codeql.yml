@@ -10,7 +10,7 @@ jobs:
   analyze:
     if: github.repository == 'azure-samples/cosmos-db-table-dotnet-quickstart'
     name: Analyze (csharp)
-    runs-on: mcr.microsoft.com/dotnet/sdk:9.0
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
       packages: read
@@ -26,6 +26,11 @@ jobs:
       with:
         languages: csharp
         build-mode: manual
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0
+        cache: true
     - name: Build project
       working-directory: ./src
       run: |
