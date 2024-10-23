@@ -62,4 +62,4 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.0' = 
   }
 }
 
-output endpoint string = cosmosDbAccount.outputs.endpoint
+output endpoint string = 'https://${cosmosDbAccount.outputs.name}.table.cosmos.azure.com:443/'
