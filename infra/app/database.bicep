@@ -25,6 +25,11 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.0' = 
     tags: tags
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuth: true
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+      ipRules: []
+      virtualNetworkRules: []
+    }
     capabilitiesToAdd: [
       'EnableServerless'
       'EnableTable'
