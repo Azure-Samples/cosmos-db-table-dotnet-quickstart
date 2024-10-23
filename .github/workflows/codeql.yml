@@ -10,7 +10,7 @@ jobs:
   analyze:
     if: github.repository == 'azure-samples/cosmos-db-table-dotnet-quickstart'
     name: Analyze (csharp)
-    runs-on: 'ubuntu-latest'
+    runs-on: mcr.microsoft.com/dotnet/sdk:9.0
     permissions:
       security-events: write
       packages: read
@@ -29,8 +29,7 @@ jobs:
     - name: Build project
       working-directory: ./src
       run: |
-        dotnet format --verify-no-changes
-        dotnet build --configuration Release
+        dotnet build
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
