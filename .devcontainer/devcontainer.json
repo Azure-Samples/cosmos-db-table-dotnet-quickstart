@@ -1,5 +1,7 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "features": {
     "ghcr.io/azure/azure-dev/azd": {},
     "ghcr.io/devcontainers/features/azure-cli": {},
@@ -12,5 +14,6 @@
         "ms-azuretools.azure-dev"
       ]
     }
-  }
+  },
+  "postCreateCommand": "dotnet build src/Microsoft.Samples.Cosmos.Table.Quickstart.sln"
 }
