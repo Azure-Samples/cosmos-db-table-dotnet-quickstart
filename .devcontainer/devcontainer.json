@@ -12,5 +12,6 @@
         "ms-azuretools.azure-dev"
       ]
     }
-  }
+  },
+  "postCreateCommand": "dotnet build src/Microsoft.Samples.Cosmos.Table.Quickstart.sln"
 }
