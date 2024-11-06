@@ -1,8 +1,0 @@
-{  
-  "logAnalyticsWorkspace": "log-analytics",
-  "containerRegistry": "containerreg",
-  "containerAppsEnv": "container-env",
-  "containerAppsApp": "container-app",
-  "cosmosDbAccount": "cosmos-db-table",
-  "userAssignedIdentity": "managed-identity"
-}
