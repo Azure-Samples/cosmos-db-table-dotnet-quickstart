@@ -6,9 +6,9 @@
     <UserSecretsId>938c2273-843e-4d6e-98ce-7c6e979eba12</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.*" />
-    <PackageReference Include="Azure.Identity" Version="1.12.1" />
-    <PackageReference Include="System.Text.Json" Version="8.*" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
+    <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\models\Microsoft.Samples.Cosmos.Table.Quickstart.Models.csproj" />

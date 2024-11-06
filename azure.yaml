@@ -17,13 +17,15 @@ hooks:
   postprovision:
     windows:
       run: |
-        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$env:AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "CONFIGURATION:AZURECOSMOSDB:ENDPOINT" "$env:CONFIGURATION__AZURECOSMOSDB__ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "CONFIGURATION:AZURECOSMOSDB:TABLENAME" "$env:CONFIGURATION__AZURECOSMOSDB__TABLENAME" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
       shell: pwsh
       continueOnError: false
       interactive: true
     posix:
       run: |
-        dotnet user-secrets set "AZURE_COSMOS_DB_TABLE_ENDPOINT" "$AZURE_COSMOS_DB_TABLE_ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "CONFIGURATION:AZURECOSMOSDB:ENDPOINT" "$CONFIGURATION__AZURECOSMOSDB__ENDPOINT" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
+        dotnet user-secrets set "CONFIGURATION:AZURECOSMOSDB:TABLENAME" "$CONFIGURATION__AZURECOSMOSDB__TABLENAME" --project ./src/web/Microsoft.Samples.Cosmos.Table.Quickstart.Web.csproj
       shell: sh
       continueOnError: false
       interactive: true
