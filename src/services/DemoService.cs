@@ -28,7 +28,7 @@ public sealed class DemoService(
         {
             Product entity = new()
             {
-                RowKey = "68719518391",
+                RowKey = "aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb",
                 PartitionKey = "gear-surf-surfboards",
                 Name = "Yamba Surfboard",
                 Quantity = 10,
@@ -48,7 +48,7 @@ public sealed class DemoService(
         {
             Product entity = new()
             {
-                RowKey = "68719518371",
+                RowKey = "bbbbbbbb-1111-2222-3333-cccccccccccc",
                 PartitionKey = "gear-surf-surfboards",
                 Name = "Kiama Classic Surfboard",
                 Quantity = 25,
@@ -67,7 +67,7 @@ public sealed class DemoService(
 
         {
             Response<Product> response = await client.GetEntityAsync<Product>(
-                rowKey: "68719518391",
+                rowKey: "aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb",
                 partitionKey: "gear-surf-surfboards"
             );
 
