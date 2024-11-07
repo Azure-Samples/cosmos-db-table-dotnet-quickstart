@@ -1,3 +1,4 @@
+<!--
 ---
 page_type: sample
 name: "Quickstart: Azure Cosmos DB for Table and Azure SDK for .NET"
@@ -9,18 +10,19 @@ languages:
 products:
 - azure-cosmos-db
 ---
+-->
 
 # Quickstart: Azure Cosmos DB for Table client library for .NET
 
 This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table's client library for .NET. This sample application accesses an existing account and tables using the [`Azure.Data.Tables`](https://www.nuget.org/packages/Azure.Data.Tables) and  [`Azure.Identity`](https://www.nuget.org/packages/Azure.Identity) libraries from NuGet.
 
-### Prerequisites
+## Prerequisites
 
 - [Docker](https://www.docker.com/)
 - [Azure Developer CLI](https://aka.ms/azd-install)
 - [.NET SDK 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 
-### Quickstart
+## Quickstart
 
 1. Log in to Azure Developer CLI.
 
