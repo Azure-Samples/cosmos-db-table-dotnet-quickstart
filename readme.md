@@ -12,7 +12,7 @@ products:
 ---
 -->
 
-# Quickstart: Azure Cosmos DB for Table client library for .NET
+# Quickstart: Azure Cosmos DB for Table - Azure SDK for .NET
 
 This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for Table with the Azure SDK for .NET.
 
