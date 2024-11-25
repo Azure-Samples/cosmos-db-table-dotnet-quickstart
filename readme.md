@@ -24,14 +24,11 @@ This is a simple Blazor web application to illustrate common basic usage of Azur
 
 ## Quickstart
 
-1. Log in to Azure Developer CLI.
+1. Log in to Azure Developer CLI. *This is only required once per-install.*
 
     ```bash
     azd auth login
     ```
-
-    > [!TIP]
-    > This is only required once per-install.
 
 1. Initialize this template (`cosmos-db-table-dotnet-quickstart`) using `azd init`
 
