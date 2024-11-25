@@ -14,7 +14,7 @@ products:
 
 # Quickstart: Azure Cosmos DB for Table client library for .NET
 
-This is a simple Blazor web application to illustrate common basic usage of Azure Cosmos DB for Table's client library for .NET. This sample application accesses an existing account and tables using the [`Azure.Data.Tables`](https://www.nuget.org/packages/Azure.Data.Tables) and  [`Azure.Identity`](https://www.nuget.org/packages/Azure.Identity) libraries from NuGet.
+This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for Table with the Azure SDK for .NET.
 
 ## Prerequisites
 
