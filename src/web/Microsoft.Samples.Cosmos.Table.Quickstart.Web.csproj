@@ -6,7 +6,7 @@
     <UserSecretsId>938c2273-843e-4d6e-98ce-7c6e979eba12</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.10.0" />
     <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
