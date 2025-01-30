@@ -8,10 +8,9 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-dotnettools.csdevkit",
-        "ms-azuretools.azure-dev"
+        "ms-azuretools.azure-dev",
+        "ms-dotnettools.csdevkit"
       ]
     }
-  },
-  "postCreateCommand": "dotnet build src/Microsoft.Samples.Cosmos.Table.Quickstart.sln"
+  }
 }
