@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
-    <PackageReference Include="System.Text.Json" Version="9.0.2" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+    <PackageReference Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\models\Microsoft.Samples.Cosmos.Table.Quickstart.Models.csproj" />
